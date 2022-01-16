@@ -2,7 +2,6 @@
 #include <Arduino.h>
 
 #define TO_GND true          // кнопка подключена к земле
-#define TO_VCC false         // кнопка подключена к питанию
 
 class dfButton
 {
@@ -85,12 +84,12 @@ dfButton::dfButton(byte pin, bool toGND, uint32_t bounceTime)
 {
     _pin = pin;
     _bounceTime = bounceTime;
-#ifdef INPUT_PULLDOWN
     _toGND = toGND;
+#ifdef INPUT_PULLDOWN
     _toGND ? pinMode(_pin, INPUT_PULLUP) : pinMode(_pin, INPUT_PULLDOWN);
 #else
-    _toGND = TO_GND;
-    pinMode(_pin, INPUT_PULLUP);
+    if (_toGND)   pinMode(_pin, INPUT_PULLUP);
+    else          pinMode(_pin, INPUT);
 #endif
     _pressFlag = digitalRead(_pin);
 }
